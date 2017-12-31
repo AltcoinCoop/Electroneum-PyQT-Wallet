@@ -3,10 +3,10 @@ from PyQt4.QtCore import pyqtSlot
 from PyQt4.QtGui import *
 from PyQt4.QtCore import QTimer
 from PyQt4.QtCore import QThread
-import sys,os,subprocess,ctypes,datetime,requests,json,atexit,time,daemonrpc,ConfigParser,urllib2
+import sys,os,subprocess,ctypes,datetime,requests,json,atexit,time,daemonrpc,ConfigParser,urllib2,ssl
 from requests.auth import HTTPDigestAuth
 from requests.auth import HTTPBasicAuth
- 
+
 global p
 global p2
 global targetblock
@@ -98,13 +98,13 @@ class pingBalance(QThread):
 
     def run(self):
         global balance,ubalance,btcbalance,gbpbalance
-        temp = daemonrpc.getBalance()
-                
-        btcetn = urllib2.urlopen("https://www.cryptopia.co.nz/api/GetMarket/ETN_BTC")
+       
+        temp = daemonrpc.getBalance()    
+        btcetn = urllib2.urlopen("https://api.coinmarketcap.com/v1/ticker/electroneum/")
         btcetn = btcetn.read()
         btcetn = json.loads(btcetn)
-        btcetn = btcetn['Data']['BidPrice']
-
+        
+        btcetn = btcetn[0]['price_btc']
         btcgbp = urllib2.urlopen("https://api.coinbase.com/v2/prices/sell?currency=GBP")
         btcgbp = btcgbp.read()
         btcgbp = json.loads(btcgbp)
