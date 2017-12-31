@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['ETN.Gui.Wallet.v.0.1.2.pyw'],
+a = Analysis(['ETN GUI Wallet.pyw'],
              pathex=['C:\\Users\\philb\\Documents\\BitBucket Repos\\Electroneum-PyQT-Wallet'],
              binaries=[('etn.ico', '.')],
              datas=[],

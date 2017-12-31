@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Electroneum GUI Wallet"
-#define MyAppVersion "0.1.2"
+#define MyAppVersion "0.1.3"
 #define MyAppPublisher "Frozennova"
 #define MyAppURL "http://www.baucutt.me"
 #define MyAppExeName "ETN.Gui.Wallet.v.0.1.2.exe"
@@ -34,14 +34,14 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "C:\Users\philb\Desktop\GUI Wallet\dist\ETN.Gui.Wallet.v.0.1.2.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\philb\Desktop\GUI Wallet\electroneumd.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\philb\Desktop\GUI Wallet\electroneum-wallet-cli.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\philb\Desktop\GUI Wallet\electroneum-wallet-rpc.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\philb\Desktop\GUI Wallet\etn.ico"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\philb\Desktop\GUI Wallet\libcrypto.a"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\philb\Desktop\GUI Wallet\libssl.a"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\philb\Desktop\GUI Wallet\libwinpthread-1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\dist\ETN GUI Wallet.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\electroneumd.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\electroneum-wallet-cli.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\electroneum-wallet-rpc.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\etn.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\libcrypto.a"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\libssl.a"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\libwinpthread-1.dll"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
