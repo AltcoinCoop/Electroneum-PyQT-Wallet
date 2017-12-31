@@ -36,7 +36,7 @@ else:
     Config.read("walletsettings.ini")
 p = subprocess.Popen(['electroneumd.exe','--data-dir',Config.get('electroneumd','datadir')],creationflags = 0x08000000)
 p2 = subprocess.Popen(['electroneum-wallet-rpc.exe', '--rpc-bind-port=8974' ,'--wallet-dir=' + "Wallets" ,'--rpc-login=monero:1234'],creationflags = 0x08000000)
-#time.sleep(0.5)
+time.sleep(1.5)
 targetblock = daemonrpc.getTargetBlock()
 def appExec(app,p,p2):
     app.exec_()
@@ -105,21 +105,29 @@ class pingBalance(QThread):
     def run(self):
         global balance,ubalance,btcbalance,gbpbalance
        
-        temp = daemonrpc.getBalance()    
-        btcetn = urllib2.urlopen("https://api.coinmarketcap.com/v1/ticker/electroneum/")
-        btcetn = btcetn.read()
-        btcetn = json.loads(btcetn)
-        
-        btcetn = btcetn[0]['price_btc']
-        btcgbp = urllib2.urlopen("https://api.coinbase.com/v2/prices/sell?currency=GBP")
-        btcgbp = btcgbp.read()
-        btcgbp = json.loads(btcgbp)
+        temp = daemonrpc.getBalance()
+        try:
+            btcetn = urllib2.urlopen("https://api.coinmarketcap.com/v1/ticker/electroneum/")
+            btcetn = btcetn.read()
+            btcetn = json.loads(btcetn)
+            btcetn = btcetn[0]['price_btc']
+            btcetnout = str( float(temp['result']['balance']) / 100 * float(btcetn)) + " BTC"
+        except:
+            btcetnout = "Unknown"
 
-        btcgbp = btcgbp['data']['amount']
+        try:
+            btcgbp = urllib2.urlopen("https://api.coinbase.com/v2/prices/sell?currency=GBP")
+            btcgbp = btcgbp.read()
+            btcgbp = json.loads(btcgbp)
+            btcgbp = btcgbp['data']['amount']
+            btcgbpout = u"\xA3" + str( round(float(temp['result']['balance']) / 100 * float(btcetn) * float(btcgbp),2))
+        except:
+            btcgbpout = "Unknown"
+            
         ubalance.setText(  str( float(temp['result']['unlocked_balance']) / 100) + " ETN")
         balance.setText(  str( float(temp['result']['balance']) / 100) + " ETN")
-        btcbalance.setText( str( float(temp['result']['balance']) / 100 * float(btcetn)) + "BTC")
-        gbpbalance.setText( u"\xA3" + str( round(float(temp['result']['balance']) / 100 * float(btcetn) * float(btcgbp),2)))
+        btcbalance.setText( btcetnout )
+        gbpbalance.setText( btcgbpout )
         
 class getTransactions(QThread):
     def __init__(self):
@@ -382,14 +390,12 @@ def main():
         oerror.setText("")
         try:
             res['result']
-            openw.setEnabled(False)
             updateWalletDataThread.start()
             balanceStatusThread.start()
             transactionStatusThread.start()
             balancetimer.start(150000)
             transactionTimer.start(30000)
         except:
-            openw.setEnabled(True)
             oerror.setText(res['error']['message'])
     @pyqtSlot()
     def importfromkeysButton():
