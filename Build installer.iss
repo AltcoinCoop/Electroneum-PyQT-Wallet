@@ -5,7 +5,7 @@
 #define MyAppVersion "0.1.3"
 #define MyAppPublisher "Frozennova"
 #define MyAppURL "http://www.baucutt.me"
-#define MyAppExeName "ETN.Gui.Wallet.v.0.1.2.exe"
+#define MyAppExeName "ETN GUI Wallet.exe"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
