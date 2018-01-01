@@ -19,11 +19,16 @@ def kill_proc(name):
     for proc in psutil.process_iter(attrs=["name", "exe", "cmdline"]):
         if proc.info['name'] == name:
             proc.kill()
-            
+
+
+
+
 kill_proc("electroneumd.exe")
 kill_proc("electroneum-wallet-cli.exe")
 if os.path.isfile("electroneum-wallet-rpc.8974.login"):
     os.remove("electroneum-wallet-rpc.8974.login")
+if not os.path.isfile("addressbook.ini"):
+    open("addressbook.ini",'a').close()
 if not os.path.isdir(os.path.expanduser('Wallets')):
         os.makedirs(os.path.expanduser('Wallets'))
 Config = ConfigParser.ConfigParser()
@@ -188,8 +193,23 @@ class importWalletFromKeys(QThread):
         walletname.setText(str(newwalletname.text()))
         password.setText(str(newpass1.text()))
         openwButton()
+def populateAddressBook():
+    global addrtable,addressbook
+    addrtable.setRowCount(0)
+    try:
+        addressbook = json.load(open('addressbook.ini'))
+        for entry in addressbook:
+            rowPosition = txtable.rowCount()
+            addrtable.insertRow(rowPosition)
+            addrtable.setItem(rowPosition,0, QTableWidgetItem( str( entry['name'] ) ) )
+            addrtable.setItem(rowPosition,1, QTableWidgetItem( str( entry['address'] ) ) )
+            addrtable.setItem(rowPosition,2, QTableWidgetItem( str( entry['payid'] ) ) )
+    except:
+        addressbook = []
+        pass
+
 def main():
-    global w,p,p2,syncstatus,walletname,password,address,balance,ubalance,txtable,Qt,currentblock,payto,payid,amount,sendP,serror,btcbalance,gbpbalance,newwalletname,newpass1,openwButton
+    global w,p,p2,syncstatus,walletname,password,address,balance,ubalance,txtable,Qt,currentblock,payto,payid,amount,sendP,serror,btcbalance,gbpbalance,newwalletname,newpass1,openwButton,addrtable,payto,payid,paytoname,addressbook
 
     app = QApplication(sys.argv)
     w	= QTabWidget()
@@ -198,6 +218,7 @@ def main():
     wallettab	= QWidget()	
     sendtab	= QWidget()
     transtab = QWidget()
+    addressbooktab = QWidget()
     w.resize(800, 500)
     w.setUsesScrollButtons(False)
     
@@ -206,6 +227,7 @@ def main():
     w.addTab(wallettab,"Wallet")
     w.addTab(sendtab,"Send")
     w.addTab(transtab,"Transactions")
+    w.addTab(addressbooktab,"Address Book")
     
     # Set title and show
     w.setWindowTitle('Electroneum GUI Wallet by Frozennova')
@@ -246,7 +268,7 @@ QTabBar::tab:last {
     border-bottom-right-radius: 3px;
     margin-right: 700px;
 }
-QLineEdit#balances
+QLineEdit#balances, QLabel#balances
 {
     background-color: #136ba2;
     border: 0;
@@ -483,6 +505,7 @@ QLineEdit#balances
                                 
         else:
             nerror.setText("Passwords Do not match")
+
     importfromkeys.clicked.connect(importfromkeysButton)
     openw.clicked.connect(openwButton)
     importw.clicked.connect(importwButton)
@@ -493,7 +516,7 @@ QLineEdit#balances
     txtable.resize(770, 380)
     txtable.move(10,30)
     txtable.setRowCount(0)
-    txtable.setColumnCount(4)
+    txtable.setColumnCount(3)
     txtable.setEditTriggers(QAbstractItemView.NoEditTriggers)
     inheader = txtable.horizontalHeader()
     inheader.setResizeMode(0, QHeaderView.ResizeToContents)
@@ -503,7 +526,41 @@ QLineEdit#balances
     txtable.setHorizontalHeaderLabels(("Time;Amount;Transaction ID;Block #").split(";"))
     txtable.setSortingEnabled(True)
 
+    #Address Book Tab
+
+    addrtable = QTableWidget(addressbooktab)
+    addrtable.resize(770, 380)
+    addrtable.move(10,30)
+    addrtable.setRowCount(0)
+    addrtable.setColumnCount(3)
+    addrtable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    addrheader = addrtable.horizontalHeader()
+    addrheader.setResizeMode(0, QHeaderView.ResizeToContents)
+    addrheader.setResizeMode(1, QHeaderView.Stretch)
+    addrheader.setResizeMode(2, QHeaderView.Stretch)
+    addrtable.setHorizontalHeaderLabels(("Name;Address;Payment ID").split(";"))
+    addrtable.setSortingEnabled(True)
+    #addrtable.setSelectionBehavior(QAbstractItemView.SelectRows)
+
+    populateAddressBook()
+    
+    def addressBooktoSend():
+        global payto,payid
+        row = addrtable.selectionModel().currentIndex().row()
+        paytoname.setText(addrtable.item(row,0).text())
+        payto.setText(addrtable.item(row,1).text())
+        payid.setText(addrtable.item(row,2).text())
+
+    addrtable.doubleClicked.connect(addressBooktoSend)
     #Send Tab
+
+    paytonamel = QLabel("Payee Name",sendtab)
+    paytonamel.move(20, 40)
+
+    paytoname = QLineEdit(sendtab)
+    paytoname.resize(550,20)
+    paytoname.move(80,38)
+    paytoname.setText("")
 
     paytol = QLabel("To Address",sendtab)
     paytol.move(20, 70)
