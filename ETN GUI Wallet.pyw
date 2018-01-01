@@ -540,13 +540,28 @@ QLineEdit#balances
 
     sendP = QPushButton('Send Payment', sendtab)
     sendP.move(20,160)
+    
+    saveP = QPushButton('Save Payee', sendtab)
+    saveP.move(100,160)
 
     sendTransferThread = sendTransfer()
+    
     @pyqtSlot()
     def sendPButton():
         global walletname,password,oerror,openw,balanceStatusThread,balancetimer,updateWalletDataThread
         sendTransferThread.start()
+        
+    @pyqtSlot()
+    def savePButton():
+        global payto,payid,paytoname,addressbook
+        addressbook.append({"name": str(paytoname.text()), "address": str(payto.text()), "payid":str(payid.text())})
+        with open('addressbook.ini', 'w') as outfile:
+            json.dump(addressbook, outfile)
+        populateAddressBook()
+
+        
     sendP.clicked.connect(sendPButton)
+    saveP.clicked.connect(savePButton)
     #Show/Exit
 
 
