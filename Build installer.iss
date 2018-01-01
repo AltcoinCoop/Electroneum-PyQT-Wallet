@@ -42,6 +42,7 @@ Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\etn.ic
 Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\libcrypto.a"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\libssl.a"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\libwinpthread-1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\logo.png"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

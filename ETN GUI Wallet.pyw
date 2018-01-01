@@ -1,6 +1,7 @@
 # -*- coding: cp1252 -*-
 from PyQt4.QtCore import pyqtSlot
 from PyQt4.QtGui import *
+from PyQt4.QtCore import Qt
 from PyQt4.QtCore import QTimer
 from PyQt4.QtCore import QThread
 import sys,os,psutil,subprocess,ctypes,datetime,requests,json,atexit,time,daemonrpc,ConfigParser,urllib2,ssl
@@ -137,36 +138,39 @@ class getTransactions(QThread):
         self.wait()
 
     def run(self):
-        global intable,outtable,currentblock
+        global txtable,currentblock
         out = daemonrpc.getTransfers()
-        intable.setRowCount(0)
+        txtable.setRowCount(0)
         try:
             for tin in out['result']['in']:
-                rowPosition = intable.rowCount()
-                intable.insertRow(rowPosition)
+                rowPosition = txtable.rowCount()
+                txtable.insertRow(rowPosition)
                 timestamp = (datetime.datetime.fromtimestamp( tin['timestamp'] ) ).strftime('%d-%m-%Y %H:%M:%S')
                 
-                intable.setItem(rowPosition,0, QTableWidgetItem( str(timestamp ) ) )
-                intable.setItem(rowPosition,1, QTableWidgetItem( str( float (tin['amount']) / 100) + " ETN" ) )
-                intable.setItem(rowPosition,2, QTableWidgetItem( str( tin['txid'] ) ) )
-                intable.setItem(rowPosition,3, QTableWidgetItem( str(  tin['height']) ) )
+                txtable.setItem(rowPosition,0, QTableWidgetItem( str(timestamp ) ) )
+                txtable.setItem(rowPosition,1, QTableWidgetItem( str( float (tin['amount']) / 100) + " ETN" ) )
+                txtable.setItem(rowPosition,2, QTableWidgetItem( str( tin['txid'] ) ) )
+                txtable.setItem(rowPosition,3, QTableWidgetItem( str(  tin['height']) ) )
+                
         except:
             pass
-        outtable.setRowCount(0)
         try:
             for tout in out['result']['out']:
-                rowPosition = outtable.rowCount()
-                outtable.insertRow(rowPosition)
+                rowPosition = txtable.rowCount()
+                txtable.insertRow(rowPosition)
                 timestamp = (datetime.datetime.fromtimestamp( tout['timestamp'] ) ).strftime('%d-%m-%Y %H:%M:%S')
                 
-                outtable.setItem(rowPosition,0, QTableWidgetItem( str(timestamp ) ) )
-                outtable.setItem(rowPosition,1, QTableWidgetItem( str( float ( tout['amount'] ) / 100) + " ETN" ) )
-                outtable.setItem(rowPosition,2, QTableWidgetItem( str( tout['txid'] ) ) )
-                outtable.setItem(rowPosition,3, QTableWidgetItem( str( tout['height']) ) )
+                txtable.setItem(rowPosition,0, QTableWidgetItem( str(timestamp ) ) )
+                txtable.setItem(rowPosition,1, QTableWidgetItem( "-" + str( float ( tout['amount'] ) / 100) + " ETN" ) )
+                txtable.setItem(rowPosition,2, QTableWidgetItem( str( tout['txid'] ) ) )
+                txtable.setItem(rowPosition,3, QTableWidgetItem( str( tout['height']) ) )
+                txtable.item(rowPosition,0).setTextColor(QColor(255,0,0))
+                txtable.item(rowPosition,1).setTextColor(QColor(255,0,0))
+                txtable.item(rowPosition,2).setTextColor(QColor(255,0,0))
+                txtable.item(rowPosition,3).setTextColor(QColor(255,0,0))
         except:
             pass
-        intable.sortItems(3,1)
-        outtable.sortItems(3,1)
+        txtable.sortItems(3,1)
 class importWalletFromKeys(QThread):
     def __init__(self):
         QThread.__init__(self)
@@ -185,7 +189,7 @@ class importWalletFromKeys(QThread):
         password.setText(str(newpass1.text()))
         openwButton()
 def main():
-    global w,p,p2,syncstatus,walletname,password,address,balance,ubalance,intable,outtable,Qt,currentblock,payto,payid,amount,sendP,serror,btcbalance,gbpbalance,newwalletname,newpass1,openwButton
+    global w,p,p2,syncstatus,walletname,password,address,balance,ubalance,txtable,Qt,currentblock,payto,payid,amount,sendP,serror,btcbalance,gbpbalance,newwalletname,newpass1,openwButton
 
     app = QApplication(sys.argv)
     w	= QTabWidget()
@@ -193,21 +197,66 @@ def main():
     # Create tabs
     wallettab	= QWidget()	
     sendtab	= QWidget()
-    transintab = QWidget()
-    transouttab = QWidget()
+    transtab = QWidget()
     w.resize(800, 500)
+    w.setUsesScrollButtons(False)
+    
     
     # Add tabs
     w.addTab(wallettab,"Wallet")
     w.addTab(sendtab,"Send")
-    w.addTab(transintab,"Transactions In")
-    w.addTab(transouttab,"Transactions Out")
+    w.addTab(transtab,"Transactions")
     
     # Set title and show
     w.setWindowTitle('Electroneum GUI Wallet by Frozennova')
     w.setWindowIcon(QIcon(resource_path(".") + '/etn.ico'))
     syncstatus = QLabel("                                                                                                                                                                 ",w)
     
+	# Set Style Sheet
+	
+    pic = QLabel(w)
+    pic.setGeometry(7, 7, 45, 45)
+    #use full ABSOLUTE path to the image, not relative
+    pic.setPixmap(QPixmap(os.getcwd() + "/logo.png"))
+    stylesheet = """
+QTabWidget QTabBar{
+background-color: #136ba2;
+}
+QTabWidget::pane {
+border:0;
+background-color: white;
+}
+QTabWidget QTabBar::tab{
+background-color: #136ba2;
+height: 60px;
+color: #e6e6e6;
+padding-left:10;
+padding-right:10;
+}
+
+QTabWidget QTabBar::tab:selected{
+background-color: #0f5d90;
+}
+QTabWidget QTabBar::tab:first{
+margin-left:60px
+}
+
+QTabBar::tab:last {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    margin-right: 700px;
+}
+QLineEdit#balances
+{
+    background-color: #136ba2;
+    border: 0;
+    color: white
+}
+    """
+    w.setStyleSheet(stylesheet)
+	
+	
+	
     syncstatus.width()
     syncstatus.move(10, 480)
 
@@ -266,44 +315,61 @@ def main():
     openw.move(100,120)
 
     ubalancel = QLabel("Unlocked Balance",w)
-    ubalancel.move(690, 30)
+    ubalancel.move(690, 5)
+    ubalancel.setObjectName("balances")
+    ubalancel.setAlignment(Qt.AlignCenter)
 
     ubalance = QLineEdit(w)
-    ubalance.move(690, 50)
+    ubalance.move(690, 25)
     ubalance.resize(80,20)
     ubalance.setReadOnly(True)
-    ubalance.setFrame(True)
+    ubalance.setFrame(False)
     ubalance.setText("00.00")
+    ubalance.setObjectName("balances")
+    ubalance.setAlignment(Qt.AlignCenter)
+    
 
     balancel = QLabel("Balance",w)
-    balancel.move(620, 30)
+    balancel.move(620, 5)
+    balancel.setObjectName("balances")
+    balancel.setAlignment(Qt.AlignCenter)
 
     balance = QLineEdit(w)
-    balance.move(600, 50)
+    balance.move(600, 25)
     balance.resize(80,20)
     balance.setReadOnly(True)
     balance.setFrame(True)
     balance.setText("00.00")
+    balance.setObjectName("balances")
+    balance.setAlignment(Qt.AlignCenter)
 
     btcbalancel = QLabel("BTC Value",w)
-    btcbalancel.move(430, 30)
-
+    btcbalancel.move(435, 5)
+    btcbalancel.setObjectName("balances")
+    btcbalancel.setAlignment(Qt.AlignCenter)
+    
     btcbalance = QLineEdit(w)
-    btcbalance.move(420, 50)
+    btcbalance.move(420, 25)
     btcbalance.resize(80,20)
     btcbalance.setReadOnly(True)
     btcbalance.setFrame(True)
     btcbalance.setText("00.00")
+    btcbalance.setObjectName("balances")
+    btcbalance.setAlignment(Qt.AlignCenter)
 
     gbpbalancel = QLabel("GBP Value",w)
-    gbpbalancel.move(520, 30)
+    gbpbalancel.move(525, 5)
+    gbpbalancel.setObjectName("balances")
+    gbpbalancel.setAlignment(Qt.AlignCenter)
 
     gbpbalance = QLineEdit(w)
-    gbpbalance.move(510, 50)
+    gbpbalance.move(510, 25)
     gbpbalance.resize(80,20)
     gbpbalance.setReadOnly(True)
     gbpbalance.setFrame(True)
     gbpbalance.setText("00.00")
+    gbpbalance.setObjectName("balances")
+    gbpbalance.setAlignment(Qt.AlignCenter)
 
 
 
@@ -423,35 +489,19 @@ def main():
 
 
     #Transactions In table
-    intable = QTableWidget(transintab)
-    intable.resize(770, 380)
-    intable.move(10,60)
-    intable.setRowCount(0)
-    intable.setColumnCount(4)
-    intable.setEditTriggers(QAbstractItemView.NoEditTriggers)
-    inheader = intable.horizontalHeader()
+    txtable = QTableWidget(transtab)
+    txtable.resize(770, 380)
+    txtable.move(10,60)
+    txtable.setRowCount(0)
+    txtable.setColumnCount(4)
+    txtable.setEditTriggers(QAbstractItemView.NoEditTriggers)
+    inheader = txtable.horizontalHeader()
     inheader.setResizeMode(0, QHeaderView.ResizeToContents)
     inheader.setResizeMode(1, QHeaderView.ResizeToContents)
     inheader.setResizeMode(2, QHeaderView.Stretch)
     inheader.setResizeMode(3, QHeaderView.ResizeToContents)
-    intable.setHorizontalHeaderLabels(("Time;Amount;Transaction ID;Block #").split(";"))
-    intable.setSortingEnabled(True)
-
-
-    #Transactions Out table
-    outtable = QTableWidget(transouttab)
-    outtable.resize(770, 380)
-    outtable.move(10,60)
-    outtable.setRowCount(0)
-    outtable.setColumnCount(4)
-    outtable.setEditTriggers(QAbstractItemView.NoEditTriggers)
-    outheader = outtable.horizontalHeader()
-    outheader.setResizeMode(0, QHeaderView.ResizeToContents)
-    outheader.setResizeMode(1, QHeaderView.ResizeToContents)
-    outheader.setResizeMode(2, QHeaderView.Stretch)
-    outheader.setResizeMode(3, QHeaderView.ResizeToContents)
-    outtable.setHorizontalHeaderLabels(("Time;Amount;Transaction ID;Block #").split(";"))
-    outtable.setSortingEnabled(True)
+    txtable.setHorizontalHeaderLabels(("Time;Amount;Transaction ID;Block #").split(";"))
+    txtable.setSortingEnabled(True)
 
     #Send Tab
 
