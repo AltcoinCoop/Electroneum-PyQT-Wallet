@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Electroneum GUI Wallet"
-#define MyAppVersion "0.1.3"
+#define MyAppVersion "0.1.4"
 #define MyAppPublisher "Frozennova"
 #define MyAppURL "http://www.baucutt.me"
 #define MyAppExeName "ETN GUI Wallet.exe"

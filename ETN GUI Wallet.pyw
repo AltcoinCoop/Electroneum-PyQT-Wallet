@@ -491,7 +491,7 @@ QLineEdit#balances
     #Transactions In table
     txtable = QTableWidget(transtab)
     txtable.resize(770, 380)
-    txtable.move(10,60)
+    txtable.move(10,30)
     txtable.setRowCount(0)
     txtable.setColumnCount(4)
     txtable.setEditTriggers(QAbstractItemView.NoEditTriggers)
