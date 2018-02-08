@@ -35,9 +35,9 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\dist\ETN GUI Wallet.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\electroneumd.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\electroneum-wallet-cli.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\electroneum-wallet-rpc.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\myntd.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\mynt-wallet-cli.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\myntnote-wallet-rpc.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\etn.ico"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\libcrypto.a"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\philb\Documents\BitBucket Repos\Electroneum-PyQT-Wallet\libssl.a"; DestDir: "{app}"; Flags: ignoreversion
