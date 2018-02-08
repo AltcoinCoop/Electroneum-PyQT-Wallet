@@ -23,10 +23,10 @@ def kill_proc(name):
 
 
 
-kill_proc("electroneumd.exe")
-kill_proc("electroneum-wallet-cli.exe")
-if os.path.isfile("electroneum-wallet-rpc.8974.login"):
-    os.remove("electroneum-wallet-rpc.8974.login")
+kill_proc("myntd.exe")
+kill_proc("mynt-wallet-cli.exe")
+if os.path.isfile("myntnote-wallet-rpc.8974.login"):
+    os.remove("mynt-wallet-rpc.8974.login")
 if not os.path.isfile("addressbook.ini"):
     open("addressbook.ini",'a').close()
 if not os.path.isdir(os.path.expanduser('Wallets')):
@@ -34,14 +34,14 @@ if not os.path.isdir(os.path.expanduser('Wallets')):
 Config = ConfigParser.ConfigParser()
 if  not os.path.isfile("walletsettings.ini"):
     cfgfile = open("walletsettings.ini",'w')
-    Config.add_section('electroneumd')
-    Config.set('electroneumd','datadir','C:\ProgramData\electroneum')
+    Config.add_section('myntd')
+    Config.set('myntd','datadir','C:\ProgramData\myntwallet')
     Config.write(cfgfile)
     cfgfile.close()
 else:
     Config.read("walletsettings.ini")
-p = subprocess.Popen(['electroneumd.exe','--data-dir',Config.get('electroneumd','datadir')],creationflags = 0x08000000)
-p2 = subprocess.Popen(['electroneum-wallet-rpc.exe', '--rpc-bind-port=8974' ,'--wallet-dir=' + "Wallets" ,'--rpc-login=monero:1234'],creationflags = 0x08000000)
+p = subprocess.Popen(['myntd.exe','--data-dir',Config.get('myntd','datadir')],creationflags = 0x08000000)
+p2 = subprocess.Popen(['myntnote-wallet-rpc.exe', '--rpc-bind-port=8974' ,'--wallet-dir=' + "Wallets" ,'--rpc-login=mynt:123456abc'],creationflags = 0x08000000)
 time.sleep(1.5)
 targetblock = daemonrpc.getTargetBlock()
 def appExec(app,p,p2):
@@ -49,7 +49,7 @@ def appExec(app,p,p2):
     daemonrpc.stopRPCWallet()
     p.kill()
     p2.kill()
-    os.remove("electroneum-wallet-rpc.8974.login")
+    os.remove("mynt-wallet-rpc.8974.login")
     
 
 class syncStatusTimer(QThread):
@@ -185,7 +185,7 @@ class importWalletFromKeys(QThread):
 
     def run(self):
         global newwalletname,newpass1,openwButton
-        walletcli = subprocess.Popen(['electroneum-wallet-cli.exe','--generate-from-json','import.json'],creationflags = 0x08000000)
+        walletcli = subprocess.Popen(['mynt-wallet-cli.exe','--generate-from-json','import.json'],creationflags = 0x08000000)
         time.sleep(5)
         walletcli.kill()
         if os.path.isfile("import.json"):
