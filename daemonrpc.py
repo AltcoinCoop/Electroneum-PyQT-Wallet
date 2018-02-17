@@ -4,7 +4,7 @@ from requests.auth import HTTPBasicAuth
 import json,urllib2
 from collections import OrderedDict
 def getSyncHeight():
-    url = "http://localhost:26968/json_rpc"
+    url = "http://localhost:24091/json_rpc"
     headers = {'content-type': 'application/json'}
     rpc_input = {"jsonrpc":"2.0","id":"0","method":"getblockcount"}
     response = requests.post(url,data=json.dumps(rpc_input),headers=headers)
